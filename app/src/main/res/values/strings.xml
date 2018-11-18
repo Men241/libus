@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Libus</string>
+    <string name="accessibility_service_description">USSDService for Mobile Money Handling</string>
+</resources>
