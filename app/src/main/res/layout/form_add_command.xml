@@ -5,39 +5,39 @@
     android:padding="22dp"
     android:orientation="vertical">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Intitulé"
-        android:textSize="16sp"
-        android:textAppearance="?android:attr/textAppearance"
-        android:fontFamily="@font/futura"/>
-
-    <EditText
-        android:id="@+id/et_libelle"
+    <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:maxLines="1"
-        android:singleLine="true">
-        <requestFocus/>
-    </EditText>
+        android:layout_marginTop="25dp">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Code USSD"
-        android:textSize="16sp"
-        android:layout_marginTop="25dp"
-        android:textAppearance="?android:attr/textAppearance"
-        android:fontFamily="@font/futura"/>
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/tiet_libelle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/intitule"
+            android:inputType="textCapSentences"
+            android:textSize="16sp"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:fontFamily="@font/futura" />
 
-    <EditText
-        android:id="@+id/et_ussd"
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:maxLines="1"
-        android:singleLine="true"
-        android:inputType="phone">
-    </EditText>
+        android:layout_marginTop="25dp">
 
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/tiet_ussd"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/code_ussd"
+            android:textSize="16sp"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:fontFamily="@font/futura"
+            android:inputType="textCapCharacters"/>
+
+    </android.support.design.widget.TextInputLayout>
 </LinearLayout>

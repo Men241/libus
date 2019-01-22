@@ -1,12 +1,23 @@
 package co.dimitriongoua.libus.model;
 
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
-public class Commande extends RealmObject {
+public class Libelle extends RealmObject {
 
     private String libelle;
     private String ussd;
     private int activation;
+    private String created;
+
+
+    public String getCreated() {
+        return created;
+    }
+
+    public void setCreated(String created) {
+        this.created = created;
+    }
 
     public String getLibelle() {
         return libelle;

@@ -56,7 +56,8 @@
         android:layout_height="wrap_content"
         android:padding="10dp"
         android:orientation="horizontal"
-        android:layout_marginTop="50dp">
+        android:layout_marginTop="50dp"
+        android:visibility="gone">
 
         <LinearLayout
             android:layout_width="0dp"
@@ -120,6 +121,46 @@
                 android:textColor="#6f4248"
                 android:fontFamily="@font/futura"
                 android:onClick="execute"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:orientation="horizontal"
+        android:layout_marginTop="50dp">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_left_col"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:listitem="@layout/item_libelle">
+
+            </android.support.v7.widget.RecyclerView>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_right_col"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:listitem="@layout/item_libelle">
+
+            </android.support.v7.widget.RecyclerView>
         </LinearLayout>
 
     </LinearLayout>
