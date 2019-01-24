@@ -18,6 +18,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -80,7 +81,7 @@ public class MainActivity extends AppCompatActivity{
 
             @Override
             public void onLongClick(View view, final int position) {
-                showConfirmation(libelleRightList.get(position));
+                showContextMenu(libelleRightList.get(position));
             }
         }));
 
@@ -98,7 +99,7 @@ public class MainActivity extends AppCompatActivity{
 
             @Override
             public void onLongClick(View view, final int position) {
-                showConfirmation(libelleLeftList.get(position));
+                showContextMenu(libelleLeftList.get(position));
             }
         }));
 
@@ -242,5 +243,31 @@ public class MainActivity extends AppCompatActivity{
 
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
+    }
+
+    public void showContextMenu(final Libelle libelle) {
+        View viewInflated = LayoutInflater.from(MainActivity.this).inflate(R.layout.context_menu, null);
+        final TextView tv_edit = viewInflated.findViewById(R.id.tv_edit);
+        final TextView tv_delete = viewInflated.findViewById(R.id.tv_delete);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setView(viewInflated);
+        final AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+
+        tv_edit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(MainActivity.this, "Modification...", Toast.LENGTH_SHORT).show();
+            }
+        });
+        tv_delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
+                showConfirmation(libelle);
+            }
+        });
+
     }
 }
