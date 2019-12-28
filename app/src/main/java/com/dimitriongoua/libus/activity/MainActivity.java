@@ -11,6 +11,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -223,7 +224,7 @@ public class MainActivity extends AppCompatActivity {
     private void showUpdateDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(false)
-                .setMessage("Une mise à jour de l'application est disponible.\n" + "?")
+                .setMessage("Une mise à jour de l'application est disponible.")
                 .setPositiveButton("Mettre à jour", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
