@@ -194,7 +194,11 @@ public class MainActivity extends AppCompatActivity {
             if (!ussd.endsWith("#")) ussd += "#";
         }
 
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
         libelle.newActivation();
+        realm.commitTransaction();
+
         startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + Uri.encode(ussd))));
     }
 
