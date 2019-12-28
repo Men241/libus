@@ -1,6 +1,4 @@
-package co.dimitriongoua.libus.util;
-
-import android.content.Context;
+package com.dimitriongoua.libus.util;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -9,18 +7,15 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import co.dimitriongoua.libus.model.Libelle;
+import com.dimitriongoua.libus.model.Libelle;
 import io.realm.Realm;
 import io.realm.Sort;
 
 public class Master {
 
-    private static final String TAG = Master.class.getSimpleName();
 
-    private Context context;
+    public Master() {
 
-    public Master(Context context) {
-        this.context = context;
     }
 
     public List<Libelle> getLibelles() {

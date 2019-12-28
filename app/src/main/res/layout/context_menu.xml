@@ -11,13 +11,16 @@
         android:background="?selectableItemBackground"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="  Modifier"
+        android:text="@string/modifier"
         android:padding="10dp"
         android:textSize="18sp"
+        android:drawablePadding="10dp"
         android:drawableLeft="@drawable/ic_edit_black_24dp"
         android:gravity="center_vertical"
         android:textColor="@color/colorAccent"
-        android:fontFamily="@font/futura"/>
+        android:fontFamily="@font/futura"
+        android:drawableStart="@drawable/ic_edit_black_24dp"
+        android:focusable="true" />
 
     <TextView
         android:id="@+id/tv_delete"
@@ -25,12 +28,15 @@
         android:background="?selectableItemBackground"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="  Supprimer"
+        android:text="@string/supprimer"
         android:padding="10dp"
+        android:drawablePadding="10dp"
         android:textSize="18sp"
         android:drawableLeft="@drawable/ic_delete_black_24dp"
         android:gravity="center_vertical"
         android:textColor="#D10000"
-        android:fontFamily="@font/futura"/>
+        android:fontFamily="@font/futura"
+        android:focusable="true"
+        android:drawableStart="@drawable/ic_delete_black_24dp" />
 
 </LinearLayout>

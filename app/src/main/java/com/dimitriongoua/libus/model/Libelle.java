@@ -1,19 +1,16 @@
-package co.dimitriongoua.libus.model;
+package com.dimitriongoua.libus.model;
 
 import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
 
+@SuppressWarnings("unused")
 public class Libelle extends RealmObject {
 
     private String libelle;
     private String ussd;
     private int activation;
+    @SuppressWarnings("FieldCanBeLocal")
     private String created;
 
-
-    public String getCreated() {
-        return created;
-    }
 
     public void setCreated(String created) {
         this.created = created;
@@ -35,11 +32,7 @@ public class Libelle extends RealmObject {
         this.ussd = ussd;
     }
 
-    public int getActivation() {
-        return activation;
-    }
-
-    public void setActivation(int activation) {
-        this.activation = activation;
+    public void newActivation() {
+        this.activation++;
     }
 }
