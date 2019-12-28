@@ -3,32 +3,48 @@ package com.dimitriongoua.libus.activity;
 import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import com.google.android.material.textfield.TextInputEditText;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.List;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+import com.crashlytics.android.Crashlytics;
 import com.dimitriongoua.libus.R;
 import com.dimitriongoua.libus.adapter.LibelleListAdapter;
 import com.dimitriongoua.libus.listener.RecyclerTouchListener;
 import com.dimitriongoua.libus.model.Libelle;
 import com.dimitriongoua.libus.util.Master;
+import com.google.android.material.textfield.TextInputEditText;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import io.realm.Realm;
+
+import static com.dimitriongoua.libus.config.Endpoints.APP_STORE_URL;
+import static com.dimitriongoua.libus.config.Endpoints.CHECK_UPDATES_URL;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -73,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
         }));
 
         refreshLibelles();
+        checkUpdate();
     }
 
     @Override
@@ -203,6 +220,28 @@ public class MainActivity extends AppCompatActivity {
         alertDialog.show();
     }
 
+    private void showUpdateDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(false)
+                .setMessage("Une mise à jour de l'application est disponible.\n" + "?")
+                .setPositiveButton("Mettre à jour", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Realm realm = Realm.getDefaultInstance();
+                        realm.executeTransaction(new Realm.Transaction() {
+                            @Override
+                            public void execute(@NonNull Realm realm) {
+                                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(APP_STORE_URL)));
+                            }
+                        });
+                    }
+                })
+                .setNegativeButton("Ignorer", null);
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
     private void showContextMenu(final Libelle libelle) {
         View viewInflated = LayoutInflater.from(MainActivity.this).inflate(R.layout.context_menu, null);
         final TextView tv_edit = viewInflated.findViewById(R.id.tv_edit);
@@ -236,5 +275,33 @@ public class MainActivity extends AppCompatActivity {
 
     private void requestSendSmsPermission() {
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CALL_PHONE}, CALL_PERMISSION_CODE);
+    }
+
+    private void checkUpdate() {
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                (Request.Method.GET, CHECK_UPDATES_URL, null, new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            long version = response.getLong("version");
+                            PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+                            int versionCode = pInfo.versionCode;
+                            if (version > versionCode) showUpdateDialog();
+                        } catch (JSONException | PackageManager.NameNotFoundException e) {
+                            Crashlytics.logException(e);
+                        }
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Crashlytics.logException(error);
+                    }
+                });
+
+        RequestQueue queue = Volley.newRequestQueue(this);
+        queue.add(jsonObjectRequest);
     }
 }
