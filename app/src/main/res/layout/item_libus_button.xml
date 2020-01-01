@@ -12,6 +12,7 @@
     android:gravity="center"
     android:onClick="execute"
     android:orientation="vertical"
-    android:padding="20dp"
+    android:padding="15dp"
+    android:textSize="17sp"
     android:textColor="@color/colorPrimaryDark"
     tools:ignore="Overdraw" />

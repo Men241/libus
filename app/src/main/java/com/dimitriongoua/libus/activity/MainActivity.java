@@ -3,7 +3,6 @@ package com.dimitriongoua.libus.activity;
 import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -24,7 +23,6 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.crashlytics.android.Crashlytics;
@@ -75,13 +73,8 @@ public class MainActivity extends AppCompatActivity {
         rv_libusButtons.addOnItemTouchListener(new RecyclerTouchListener(this, rv_libusButtons, new RecyclerTouchListener.ClickListener() {
             @Override
             public void onClick(View view, int position) {
-                if (isSmsPermissionGranted()) {
-                    LibusButton libusButton = libusButtonList.get(position);
-                    executeUSSD(libusButton);
-                } else {
-                    current_button = position;
-                    requestSendSmsPermission();
-                }
+                showConfirmationExecute(position);
+
             }
 
             @Override
@@ -125,10 +118,10 @@ public class MainActivity extends AppCompatActivity {
         final TextInputEditText tiet_libelle = viewInflated.findViewById(id.tiet_libelle);
         final TextInputEditText tiet_ussd = viewInflated.findViewById(id.tiet_ussd);
 
-        String title = "Ajouter un libellé";
+        String title = "Ajouter un bouton";
         String actionText = "Créer";
         if (libToSave != null) {
-            title = "Modifier le libellé";
+            title = "Modifier le bouton";
             actionText = "Modifier";
             tiet_libelle.setText(libToSave.getLibelle());
             tiet_ussd.setText(libToSave.getUssd());
@@ -203,21 +196,39 @@ public class MainActivity extends AppCompatActivity {
         startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + Uri.encode(ussd))));
     }
 
-    private void showConfirmation(final LibusButton libusButton) {
+    private void showConfirmationRemove(final LibusButton libusButton) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(false)
                 .setMessage("Voullez-vous retirer le libellé \"" + libusButton.getLibelle() + "\" ?")
-                .setPositiveButton("Oui, Supprimer", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        Realm realm = Realm.getDefaultInstance();
-                        realm.executeTransaction(new Realm.Transaction() {
-                            @Override
-                            public void execute(@NonNull Realm realm) {
-                                libusButton.deleteFromRealm();
-                                refreshButtons();
-                            }
-                        });
+                .setPositiveButton("Oui, Supprimer", (dialogInterface, i) -> {
+                    Realm realm = Realm.getDefaultInstance();
+                    realm.executeTransaction(new Realm.Transaction() {
+                        @Override
+                        public void execute(@NonNull Realm realm) {
+                            libusButton.deleteFromRealm();
+                            refreshButtons();
+                        }
+                    });
+                })
+                .setNegativeButton("Non", null);
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    private void showConfirmationExecute(int position) {
+        LibusButton libusButton = libusButtonList.get(position);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(false)
+                .setTitle("Confirmation")
+                .setMessage("Voullez-vous exécuter ce bouton ? \n\"" + libusButton.getLibelle() + "\"\n" + libusButton.getUssd())
+                .setPositiveButton("Oui, Exécuter", (dialogInterface, i) -> {
+                    if (isSmsPermissionGranted()) {
+                        executeUSSD(libusButton);
+                    } else {
+                        current_button = position;
+                        requestSendSmsPermission();
                     }
                 })
                 .setNegativeButton("Non", null);
@@ -230,17 +241,9 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(false)
                 .setMessage("Une mise à jour de l'application est disponible.")
-                .setPositiveButton("Mettre à jour", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        Realm realm = Realm.getDefaultInstance();
-                        realm.executeTransaction(new Realm.Transaction() {
-                            @Override
-                            public void execute(@NonNull Realm realm) {
-                                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(APP_STORE_URL)));
-                            }
-                        });
-                    }
+                .setPositiveButton("Mettre à jour", (dialogInterface, i) -> {
+                    Realm realm = Realm.getDefaultInstance();
+                    realm.executeTransaction(realm1 -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(APP_STORE_URL))));
                 })
                 .setNegativeButton("Ignorer", null);
 
@@ -269,7 +272,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 alertDialog.dismiss();
-                showConfirmation(libusButton);
+                showConfirmationRemove(libusButton);
             }
         });
 
@@ -292,20 +295,13 @@ public class MainActivity extends AppCompatActivity {
                     public void onResponse(JSONObject response) {
                         try {
                             long version = response.getLong("version");
-                            PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-                            int versionCode = pInfo.versionCode;
+                            int versionCode = Master.getCurrentVersion(MainActivity.this);
                             if (version > versionCode) showUpdateDialog();
-                        } catch (JSONException | PackageManager.NameNotFoundException e) {
+                        } catch (JSONException e) {
                             Crashlytics.logException(e);
                         }
                     }
-                }, new Response.ErrorListener() {
-
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Crashlytics.logException(error);
-                    }
-                });
+                }, error -> Crashlytics.logException(error));
 
         RequestQueue queue = Volley.newRequestQueue(this);
         queue.add(jsonObjectRequest);
