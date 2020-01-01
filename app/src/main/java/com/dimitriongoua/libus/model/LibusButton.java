@@ -3,7 +3,7 @@ package com.dimitriongoua.libus.model;
 import io.realm.RealmObject;
 
 @SuppressWarnings("unused")
-public class Libelle extends RealmObject {
+public class LibusButton extends RealmObject {
 
     private String libelle;
     private String ussd;

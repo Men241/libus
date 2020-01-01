@@ -39,10 +39,10 @@
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_libelles"
+        android:id="@+id/rv_libusButtons"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="10dp"
-        tools:listitem="@layout/item_libelle" />
+        tools:listitem="@layout/item_libus_button" />
 
 </LinearLayout>

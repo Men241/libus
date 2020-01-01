@@ -2,7 +2,8 @@
     <string name="app_name">Libus</string>
     <string name="intitule">Intitulé</string>
     <string name="code_ussd">Code USSD</string>
-    <string name="modifier">Modifier</string>
-    <string name="supprimer">Supprimer</string>
+    <string name="modifier">Modifier le bouton</string>
+    <string name="supprimer">Supprimer le bouton</string>
     <string name="icone_plus">Icone plus</string>
+    <string name="annuler">Annuler</string>
 </resources>

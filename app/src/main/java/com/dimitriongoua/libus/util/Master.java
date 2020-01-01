@@ -7,7 +7,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import com.dimitriongoua.libus.model.Libelle;
+import com.dimitriongoua.libus.model.LibusButton;
+
 import io.realm.Realm;
 import io.realm.Sort;
 
@@ -18,11 +19,11 @@ public class Master {
 
     }
 
-    public List<Libelle> getLibelles() {
+    public List<LibusButton> getLibelles() {
 
         Realm realm = Realm.getDefaultInstance();
 
-        return new ArrayList<>(realm.where(Libelle.class).findAll().sort("created", Sort.DESCENDING));
+        return new ArrayList<>(realm.where(LibusButton.class).findAll().sort("created", Sort.DESCENDING));
     }
 
     public String getCurrentDate() {
