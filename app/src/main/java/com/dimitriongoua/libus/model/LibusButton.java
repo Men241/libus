@@ -11,6 +11,14 @@ public class LibusButton extends RealmObject {
     @SuppressWarnings("FieldCanBeLocal")
     private String created;
 
+    public LibusButton() {
+    }
+
+    public LibusButton(String libelle, String ussd) {
+        super();
+        this.libelle = libelle;
+        this.ussd = ussd;
+    }
 
     public void setCreated(String created) {
         this.created = created;

@@ -30,6 +30,7 @@ import com.dimitriongoua.libus.adapter.LibusButtonListAdapter;
 import com.dimitriongoua.libus.listener.RecyclerTouchListener;
 import com.dimitriongoua.libus.model.LibusButton;
 import com.dimitriongoua.libus.util.Master;
+import com.dimitriongoua.libus.util.SessionManager;
 import com.google.android.material.textfield.TextInputEditText;
 
 import org.json.JSONException;
@@ -50,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int CALL_PERMISSION_CODE = 100;
     private Master master;
+    private SessionManager session;
 
     @SuppressWarnings("CanBeFinal")
     private List<LibusButton> libusButtonList = new ArrayList<>();
@@ -62,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(layout.activity_main);
 
+        session = new SessionManager(this);
         master = new Master();
 
         RecyclerView rv_libusButtons = findViewById(id.rv_libusButtons);
@@ -145,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
                         LibusButton libusButton;
                         if (libToSave == null) {
                             libusButton = realm.createObject(LibusButton.class);
-                            libusButton.setCreated(master.getCurrentDate());
+                            libusButton.setCreated(Master.getCurrentDate());
                         } else libusButton = libToSave;
                         libusButton.setLibelle(lib);
                         libusButton.setUssd(ussd);
@@ -166,7 +169,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void refreshButtons() {
         libusButtonList.clear();
-        libusButtonList.addAll(master.getLibelles());
+        libusButtonList.addAll(master.getLibelles(this));
         adapter.notifyDataSetChanged();
 
     }

@@ -24,14 +24,32 @@ public class Master {
 
     }
 
-    public List<LibusButton> getLibelles() {
+    public List<LibusButton> getLibelles(Context context) {
 
         Realm realm = Realm.getDefaultInstance();
 
-        return new ArrayList<>(realm.where(LibusButton.class).findAll().sort("created", Sort.DESCENDING));
+        List<LibusButton> buttons = new ArrayList<>(realm.where(LibusButton.class).findAll().sort("created", Sort.DESCENDING));
+
+        if (buttons.size() == 0) {
+            SessionManager session = new SessionManager(context);
+            if (session.isFirstLaunch()) {
+                realm.beginTransaction();
+                realm.copyToRealm(new LibusButton("Acheter 300 F de crédit de communication via Airtel Money", "*150*1*1*300#"));
+                realm.copyToRealm(new LibusButton("Appeler ma personne", "066123456"));
+                realm.copyToRealm(new LibusButton("Consuluter mon solde Libertis", "#111#"));
+                realm.copyToRealm(new LibusButton("Acheter des d'unités EDAN", "*150*7*1*1*1*2#"));
+                realm.copyToRealm(new LibusButton("Consulter mon solde Airtel", "*137#"));
+                realm.copyToRealm(new LibusButton("Activer un forfait internet Airtel de 325 Mo à 1.000 F valable 3 jours", "*111*1*1*1*1#"));
+                realm.commitTransaction();
+                session.setFirstLaunch();
+                return new ArrayList<>(realm.where(LibusButton.class).findAll().sort("created", Sort.DESCENDING));
+            }
+        }
+
+        return buttons;
     }
 
-    public String getCurrentDate() {
+    public static String getCurrentDate() {
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.FRENCH);
         Date date = new Date();
         return dateFormat.format(date);
